@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-file_path= '/content/spotify-2023.csv'
+file_path= 'spotify-2023.csv'
 df = pd.read_csv(file_path, encoding='latin1')
 #needed to change  encoding b/c certain chars couldn't be read in
 df=df.head(500)#taking first 500 rows
@@ -32,23 +32,33 @@ df['streams']=pd.to_numeric(df['streams']) #was showing as string so covert to i
 fig,ax=plt.subplots(1,1)
 ax.hist(df['streams'])
 ax.set(xlabel='streams (billions)', ylabel='count', title= 'stream distribution of songs')
+fig.savefig('stream_distribution.png')
+plt.show()
 #relationship shown in this graph is that majority of songs have less streams, and the number of songs decreases as you increase streams
 
 fig,ax=plt.subplots(1,1)
 avg_by_key=df.groupby('key')['streams'].mean()
 ax.bar(avg_by_key.index, avg_by_key.values) #need index and value since its psnda series
-ax.set(xlabel='key', ylabel='avg streams (billions)', title='avg streams by mode')
+ax.set(xlabel='key', ylabel='avg streams (billions)', title='avg streams by key')
+fig.savefig('streams_key.png')
+plt.show()
 #relationship shown is c# a# keys have highest stream and a g# and f# have lowest
 
 fig,ax=plt.subplots(1,1)
 ax.scatter(df['danceability_%'], df['streams'])
 ax.set(xlabel='danceability (%)', ylabel='streams (billions)', title='danceability vs streams')
+fig.savefig('danceability_streams.png')
+plt.show()
+
+
 #no direct clear relationship, however you can say the highest stream songs are between 50-80% danceability
 
 
 pg=sns.pairplot(data=df[['danceability_%', 'energy_%',  'valence_%', 'mode']], hue='mode')
 pg.figure.suptitle('pairplot of spotify song features')
 pg.figure.tight_layout()
+pg.savefig('pairplot.png')
+plt.show()
 #there is a weak but positive relationship btwn the different features
 #shows that maybe higher energy songs are more postive and danceable
 
@@ -59,4 +69,6 @@ ax=sns.heatmap(corr,cmap='RdBu',annot=True,fmt='0.1f',
                    'fontweight': 'bold'
                });
 ax.set_title('heatmap of spotify song features')
+ax.get_figure().savefig('heatmap.png')
+plt.show()
 # danceability and valence are at 0.4, showing a medium positive relationship, same with energy and valence at 0.3
